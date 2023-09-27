@@ -25,26 +25,26 @@ public class AddressController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Address> findAddress(@PathVariable Long id) throws Throwable {
-        logger.info("m=findAddress stage=init id={}", id);
+        logger.info("*** CONTROLLER :: Searching addresses by ID = {} ***", id);
         var address = addressService.findByAddress(id);
-        logger.info("m=findAddress stage=finish");
+        logger.info("*** CONTROLLER :: Searching finish ***");
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/person/{id}")
     public ResponseEntity<List<Address>> findPersonAddress(@PathVariable Long id){
-        logger.info("m=findPersonAddress stage=init");
+        logger.info("*** CONTROLLER :: Searching for all addresses of a person ***");
         var listAddressOfPerson = addressService.findAllAddress(id);
-        logger.info("m=findPersonAddress stage=finish");
+        logger.info("*** CONTROLLER :: Searching finish ***");
         return ResponseEntity.ok(listAddressOfPerson);
     }
 
     @PostMapping("/insertAddress")
     public ResponseEntity<Void> insertAddress(@RequestBody AddressPost addressPost) throws ObjectNotFoundException {
-        logger.info("m=insertAddress stage=init");
+        logger.info("*** CONTROLLER :: Creating address ***");
         var id = addressService.createAddress(addressPost).getId();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
-        logger.info("m=findPersonAddress stage=finish");
+        logger.info("*** CONTROLLER :: Address created ***");
         return ResponseEntity.created(uri).build();
     }
 }

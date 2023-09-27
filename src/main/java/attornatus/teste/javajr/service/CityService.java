@@ -17,8 +17,6 @@ public class CityService {
     }
 
     public City findCityByID(Long id){
-        return cityRepository.findById(id).orElseThrow( () -> {
-            return new ObjectNotFoundException("Error: Entity not found.", "");
-        });
+        return cityRepository.findById(id).orElseThrow( () -> new ObjectNotFoundException("Error: Entity not found.", ""));
     }
 }

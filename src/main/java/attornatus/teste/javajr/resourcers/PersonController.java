@@ -27,32 +27,32 @@ public class PersonController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PersonDto> findPerson(@PathVariable Long id) {
-        logger.info("CONTROLLER :: Searching for PERSON by ID = {}", id);
+        logger.info("*** CONTROLLER :: Searching for PERSON by ID = {}. ***", id);
         Person person = personService.findByPerson(id);
-        logger.info("CONTROLLER :: Person found");
+        logger.info("*** CONTROLLER :: Person found. ***");
         return ResponseEntity.ok(new PersonDto(person.getName(),person.getBithDate(), person.getAdresses()));
     }
 
     @GetMapping
     public ResponseEntity<List<PersonAll>> findPersonAll(){
-        logger.info("CONTROLLER :: Looking for all people");
+        logger.info("*** CONTROLLER :: Looking for all people. ***");
         return ResponseEntity.ok(personService.findAllPerson());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePerson(@PathVariable Long id, @RequestBody PersonPut person) {
-        logger.info("CONTROLLER :: Updating person by id={} per", id);
+        logger.info("*** CONTROLLER :: Updating person by ID={} ***", id);
         personService.changePerson(id,person);
-        logger.info("CONTROLLER :: Person update finish.");
+        logger.info("*** CONTROLLER :: Person update finish. ***");
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/insert")
     public ResponseEntity<Void> insertPerson(@RequestBody PersonPost person){
-        logger.info("CONTROLLER :: Inserting person = {}", person);
+        logger.info("*** CONTROLLER :: Inserting person = {} ***", person);
         var id = personService.createPerson(person).getId();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
-        logger.info("CONTROLLER :: Inserting person finish");
+        logger.info("*** CONTROLLER :: Inserting person finish ***");
         return ResponseEntity.created(uri).build();
     }
 }

@@ -1,7 +1,6 @@
 package attornatus.teste.javajr.domain.dto;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class PersonPost {
 
@@ -13,12 +12,16 @@ public class PersonPost {
     @NotEmpty
     private Long cityId;
 
+    @NotEmpty
     private String street;
 
+    @NotEmpty
     private String zipcode;
 
+    @NotEmpty
     private Long number;
 
+    @NotEmpty
     private Character priorityAddress;
 
     public PersonPost(String name, Long birthDate, Long cityId, String street, String zipcode, Long number, Character priorityAddress) {

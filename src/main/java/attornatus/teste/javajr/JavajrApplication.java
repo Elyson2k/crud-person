@@ -1,7 +1,6 @@
 package attornatus.teste.javajr;
 
 import attornatus.teste.javajr.domain.entities.City;
-import attornatus.teste.javajr.domain.entities.Person;
 import attornatus.teste.javajr.repository.CityRepository;
 import attornatus.teste.javajr.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;

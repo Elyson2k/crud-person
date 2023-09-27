@@ -35,7 +35,7 @@ public class PersonService {
 
 
     public Person createPerson(PersonPost person){
-        logger.info("SERVICE :: Updating person and change dto to entity.");
+        logger.info("** SERVICE :: Updating person and change dto to entity. **");
         Person personAtt = fromDto(person);
         personRepository.save(personAtt);
         addressRepository.saveAll(personAtt.getAdresses());
@@ -44,17 +44,18 @@ public class PersonService {
 
     public Person findByPerson(Long id) {
       return personRepository.findById(id).orElseThrow( () -> {
-          logger.error("ERROR SERVICE :: Object not found.");
+          logger.error("** SERVICE :: Object not found. **");
           return new ObjectNotFoundException("Error: Person not found.");
       });
     }
 
     public List<PersonAll> findAllPerson(){
-        logger.info("SERVICE :: Looking for all people");
+        logger.info("** SERVICE :: Looking for all people **");
         return personRepository.findAll().stream().map(PersonAll::toDto).collect(Collectors.toList());
     }
 
     public void changePerson(Long id, PersonPut personPut){
+        logger.info("** SERVICE :: Change person and validation **");
         Optional<Person> personNew = personRepository.findById(id);
         personNew.ifPresent(person -> updatePerson(person, personPut));
         personRepository.save(personNew.get());
@@ -68,9 +69,8 @@ public class PersonService {
     }
 
     private void validatePriority(PersonPut person) throws AddressException {
-        logger.info("SERVICE :: Validating address priority");
+        logger.info("** SERVICE :: Validating address priority **");
         if(isValidPriority(person)){
-            logger.error("m=validatePriority stage=error");
             throw new AddressException("Error: use Y for true and N for false.");
         }
     }
@@ -81,14 +81,14 @@ public class PersonService {
 
     private void numberBeetwenAddress(Person person1, PersonPut person2) throws AddressException {
         if(person2.getAddressId() > person1.getAdresses().size() || person2.getAddressId() < person1.getAdresses().size()){
-            logger.error("m=numberBeetwenAddress stage=error");
+            logger.error("** SERVICE :: Validation number of address **");
             throw new AddressException("Error: insert number beetwen 1 and " + person1.getAdresses().size());
         }
         person1.getAdresses().get((int) (person2.getAddressId() -1L)).setPriorityAddress(person2.getPriorityAddress());
     }
 
     private void findPriorityAddress(Person person1, PersonPut person2){
-        logger.info("SERVICE :: Sheaching address priority");
+        logger.info("** SERVICE :: Sheaching address priority **");
         for(Address x : person1.getAdresses()){
             if(person2.getPriorityAddress() == 'Y' && x.getPriorityAddress()== 'Y') {
                 throw new AddressException("Error: Address is priority");
@@ -99,7 +99,7 @@ public class PersonService {
     }
 
     public Person fromDto(PersonPost p2){
-        logger.info("SERVICE :: Change DTO to ENTITY");
+        logger.info("** SERVICE :: Change DTO to ENTITY **");
         Person person = new Person();
         City city = cityService.findCityByID(p2.getCityId());
         Address address = new Address(null, city, person, p2.getStreet(), p2.getZipcode(), p2.getNumber(), p2.getPriorityAddress());
