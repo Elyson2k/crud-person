@@ -33,7 +33,7 @@ public class PersonDto {
         this.name = name;
     }
 
-    public void setBithDate(Date birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
