@@ -2,20 +2,22 @@ package attornatus.teste.javajr.domain.dto;
 
 import attornatus.teste.javajr.domain.entities.Person;
 
+import java.util.Date;
+
 public class PersonAll {
 
     private String name;
-    private Long bithDate;
+    private Date birthDate;
 
 
 
-    public PersonAll(String name, Long bithDate) {
+    public PersonAll(String name, Date birthDate) {
         this.name = name;
-        this.bithDate = bithDate;
+        this.birthDate = birthDate;
     }
 
     public static PersonAll toDto(Person person) {
-        return new PersonAll(person.getName(), person.getBithDate());
+        return new PersonAll(person.getName(), person.getBirthDate());
     }
 
     public String getName() {
@@ -26,11 +28,11 @@ public class PersonAll {
         this.name = name;
     }
 
-    public Long getBithDate() {
-        return bithDate;
+    public Date getBithDate() {
+        return birthDate;
     }
 
-    public void setBithDate(Long bithDate) {
-        this.bithDate = bithDate;
+    public void setBithDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 }

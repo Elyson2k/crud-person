@@ -29,8 +29,10 @@ public class PersonController {
     public ResponseEntity<PersonDto> findPerson(@PathVariable Long id) {
         logger.info("*** CONTROLLER :: Searching for PERSON by ID = {}. ***", id);
         Person person = personService.findByPerson(id);
+        PersonDto personDto = new PersonDto(person.getName(),person.getBirthDate());
+        personDto.setAdresses(person.getAdresses());
         logger.info("*** CONTROLLER :: Person found. ***");
-        return ResponseEntity.ok(new PersonDto(person.getName(),person.getBithDate(), person.getAdresses()));
+        return ResponseEntity.ok(personDto);
     }
 
     @GetMapping

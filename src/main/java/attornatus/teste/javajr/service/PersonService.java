@@ -43,32 +43,32 @@ public class PersonService {
     }
 
     public Person findByPerson(Long id) {
-      return personRepository.findById(id).orElseThrow( () -> {
-          logger.error("** SERVICE :: Object not found. **");
-          return new ObjectNotFoundException("Error: Person not found.");
-      });
+      Optional<Person> person = personRepository.findById(id);
+      if(person.isPresent()) return person.get();
+      else return person.orElseThrow( () -> new ObjectNotFoundException("Error: Person not found."));
     }
 
     public List<PersonAll> findAllPerson(){
         logger.info("** SERVICE :: Looking for all people **");
-        return personRepository.findAll().stream().map(PersonAll::toDto).collect(Collectors.toList());
+        List<PersonAll> personAlls = personRepository.findAll().stream().map(PersonAll::toDto).collect(Collectors.toList());
+        return personAlls;
     }
 
     public void changePerson(Long id, PersonPut personPut){
         logger.info("** SERVICE :: Change person and validation **");
         Optional<Person> personNew = personRepository.findById(id);
-        personNew.ifPresent(person -> updatePerson(person, personPut));
-        personRepository.save(personNew.get());
+        personNew.ifPresent(person -> updatePerson(Optional.of(person), personPut));
     }
 
-    public void updatePerson(Person person1, PersonPut person2){
+    public void updatePerson(Optional<Person> person1, PersonPut person2){
         validatePriority(person2);
-        person1.setName(person2.getName());
-        findPriorityAddress(person1, person2);
-        numberBeetwenAddress(person1, person2);
+        person1.get().setName(person2.getName());
+        findPriorityAddress(person1.get(), person2);
+        numberBeetwenAddress(person1.get(), person2);
+        person1.ifPresent(person -> personRepository.save(person));
     }
 
-    private void validatePriority(PersonPut person) throws AddressException {
+    private void validatePriority(PersonPut person) {
         logger.info("** SERVICE :: Validating address priority **");
         if(isValidPriority(person)){
             throw new AddressException("Error: use Y for true and N for false.");
@@ -105,7 +105,7 @@ public class PersonService {
         Address address = new Address(null, city, person, p2.getStreet(), p2.getZipcode(), p2.getNumber(), p2.getPriorityAddress());
         if(address.getPriorityAddress()==null) address.setPriorityAddress('N');
         person.setName(p2.getName());
-        person.setBithDate(p2.getBithDate());
+        person.setBirthDate(p2.getBirthDate());
         person.getAdresses().add(address);
         return person;
     }

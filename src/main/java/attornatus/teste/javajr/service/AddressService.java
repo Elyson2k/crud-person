@@ -2,8 +2,10 @@ package attornatus.teste.javajr.service;
 
 import attornatus.teste.javajr.domain.dto.AddressPost;
 import attornatus.teste.javajr.domain.entities.Address;
+import attornatus.teste.javajr.domain.entities.City;
 import attornatus.teste.javajr.domain.entities.Person;
 import attornatus.teste.javajr.repository.AddressRepository;
+import attornatus.teste.javajr.repository.PersonRepository;
 import attornatus.teste.javajr.service.exceptions.AddressException;
 import attornatus.teste.javajr.service.exceptions.ObjectNotFoundException;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AddressService {
@@ -21,37 +24,43 @@ public class AddressService {
     @Autowired
     private PersonService personService;
     @Autowired
+    private PersonRepository personRepository;
+    @Autowired
     private CityService cityService;
 
     private final Logger logger = LoggerFactory.getLogger(AddressService.class);
 
-    public Address createAddress(AddressPost address) throws ObjectNotFoundException {
+    public Address createAddress(AddressPost address){
         logger.info("** SERVICE :: Creating address and convert DTO to Entity **");
-        var newAddress = fromDto(address);
-        return addressRepository.save(newAddress);
+        Address newAddress = fromDto(address);
+        addressRepository.save(newAddress);
+        personRepository.save(newAddress.getPerson());
+        return newAddress;
     }
 
-    public Address findByAddress(Long id){
-      return addressRepository.findById(id).orElseThrow( () -> {
-          logger.error("** SERVICE :: Shearching address by ID **");
-          return new ObjectNotFoundException("Error: Address not found");
-      });
+    public Address findByAddress(Long id){logger.error("** SERVICE :: Shearching address by ID **");
+      Optional<Address> address = addressRepository.findById(id);
+      if(address.isPresent()) return address.get();
+      else throw new ObjectNotFoundException("Error: Address not found");
     }
 
     public List<Address> findAllAddress(Long id) {
-        logger.error("** SERVICE :: People found **");
-        return personService.findByPerson(id).getAdresses();
+        logger.info("** SERVICE :: People found **");
+        List<Address> addresses = personService.findByPerson(id).getAdresses();
+        if(addresses.isEmpty()) throw new ObjectNotFoundException("Error: Person not address or person not found.");
+        else return addresses;
     }
 
-    public Address fromDto(AddressPost addressPost) throws ObjectNotFoundException {
-        var person = personService.findByPerson(addressPost.getPersonId());
-        var city = cityService.findCityByID(addressPost.getCity());
+    private Address fromDto(AddressPost addressPost) {
+        Person person = personService.findByPerson(addressPost.getPersonId());
+        City city = cityService.findCityByID(addressPost.getCity());
+        Address address = new Address(null, city, person, addressPost.getStreet(), addressPost.getZipcode(), addressPost.getNumber(), addressPost.getPriorityAddress());
+        findPriorityAddress(person, addressPost);
         validatePriority(addressPost);
-        findPriorityAddress(person,addressPost);
-        return new Address(null, city, person, addressPost.getStreet(), addressPost.getZipcode(), addressPost.getNumber(), addressPost.getPriorityAddress());
+        return address;
     }
 
-    private void validatePriority(AddressPost addressPost) throws AddressException {
+    private void validatePriority(AddressPost addressPost) {
         logger.info("** SERVICE :: Validating address priority **");
         if(isValidPriority(addressPost)){
             logger.error("** SERVICE :: Error a validation **");
@@ -66,10 +75,9 @@ public class AddressService {
     private void findPriorityAddress(Person person1, AddressPost addressPost){
         logger.info("** SERVICE :: Sheaching address priority **");
         for(Address x : person1.getAdresses()){
-            if(addressPost.getPriorityAddress() == 'Y' && x.getPriorityAddress()== 'Y') {
+            if (x.getPriorityAddress()=='Y' && addressPost.getPriorityAddress()=='Y') {
                 throw new AddressException("Error: Address is priority");
             }
-            return;
         }
     }
 }

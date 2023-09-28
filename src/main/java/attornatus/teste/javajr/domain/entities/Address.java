@@ -35,6 +35,15 @@ public class Address {
         this.priorityAddress = priorityAddress;
     }
 
+    public Address(Long id, City city, String street, String zipcode, Long number, Character priorityAddress) {
+        this.id = id;
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+        this.number = number;
+        this.priorityAddress = priorityAddress;
+    }
+
     public Address() {
     }
 

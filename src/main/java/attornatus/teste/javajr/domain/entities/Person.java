@@ -2,6 +2,7 @@ package attornatus.teste.javajr.domain.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Table
@@ -12,16 +13,18 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long bithDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_of_birth", nullable = false)
+    private Date birthDate;
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<Address> adresses = new ArrayList<>();
 
-    public Person(Long id, String name, Long bithDate) {
+    public Person(Long id, String name, Date birthDate) {
         this.id = id;
         this.name = name;
-        this.bithDate = bithDate;
+        this.birthDate = birthDate;
     }
-
+    
     public Person() {
     }
 
@@ -41,12 +44,12 @@ public class Person {
         this.name = name;
     }
 
-    public Long getBithDate() {
-        return bithDate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBithDate(Long bithDate) {
-        this.bithDate = bithDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public List<Address> getAdresses() {

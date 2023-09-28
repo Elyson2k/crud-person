@@ -1,6 +1,7 @@
 package attornatus.teste.javajr.domain.dto;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 
 public class PersonPost {
 
@@ -8,7 +9,7 @@ public class PersonPost {
     @NotEmpty
     private String name;
     @NotEmpty
-    private Long birthDate;
+    private Date birthDate;
     @NotEmpty
     private Long cityId;
 
@@ -24,7 +25,7 @@ public class PersonPost {
     @NotEmpty
     private Character priorityAddress;
 
-    public PersonPost(String name, Long birthDate, Long cityId, String street, String zipcode, Long number, Character priorityAddress) {
+    public PersonPost(String name, Date birthDate, Long cityId, String street, String zipcode, Long number, Character priorityAddress) {
         this.name = name;
         this.birthDate = birthDate;
         this.cityId = cityId;
@@ -42,11 +43,11 @@ public class PersonPost {
         this.name = name;
     }
 
-    public Long getBithDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBithDate(Long birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
